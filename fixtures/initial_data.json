@@ -1,0 +1,922 @@
+[
+    {
+        "model": "common.airline",
+        "pk": 1,
+        "fields": {
+            "value": "Air Canada"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 2,
+        "fields": {
+            "value": "Air Transat"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 3,
+        "fields": {
+            "value": "American Airlines"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 4,
+        "fields": {
+            "value": "Delta Airlines"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 5,
+        "fields": {
+            "value": "Japan Airlines"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 6,
+        "fields": {
+            "value": "OTHER"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 7,
+        "fields": {
+            "value": "Porter"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 8,
+        "fields": {
+            "value": "Sunwing"
+        }
+    },
+    {
+        "model": "common.airline",
+        "pk": 9,
+        "fields": {
+            "value": "Westjet"
+        }
+    },
+    {
+        "model": "common.rentalagency",
+        "pk": 1,
+        "fields": {
+            "value": "AVIS"
+        }
+    },
+    {
+        "model": "common.rentalagency",
+        "pk": 2,
+        "fields": {
+            "value": "Hertz"
+        }
+    },
+    {
+        "model": "common.rentalagency",
+        "pk": 3,
+        "fields": {
+            "value": "Other"
+        }
+    },
+    {
+        "model": "common.cartype",
+        "pk": 1,
+        "fields": {
+            "value": "1) Midsize/Intermediate/Compact",
+            "description": "Midsize car"
+        }
+    },
+    {
+        "model": "common.cartype",
+        "pk": 2,
+        "fields": {
+            "value": "2) Premium - multiple passengers",
+            "description": "Premium car for multiple passengers"
+        }
+    },
+    {
+        "model": "common.cartype",
+        "pk": 3,
+        "fields": {
+            "value": "3) Premium - larger vehicle-transporting equipment",
+            "description": "Premium car for transporting equipment"
+        }
+    },
+    {
+        "model": "common.cartype",
+        "pk": 4,
+        "fields": {
+            "value": "4) Premium - Other",
+            "description": "Other premium cars"
+        }
+    },
+    {
+        "model": "common.mealcategory",
+        "pk": 1,
+        "fields": {
+            "value": "Breakfast"
+        }
+    },
+    {
+        "model": "common.mealcategory",
+        "pk": 2,
+        "fields": {
+            "value": "Lunch"
+        }
+    },
+    {
+        "model": "common.mealcategory",
+        "pk": 3,
+        "fields": {
+            "value": "Dinner"
+        }
+    },
+    {
+        "model": "common.relationshiptopai",
+        "pk": 1,
+        "fields": {
+            "value": "None"
+        }
+    },
+    {
+        "model": "common.relationshiptopai",
+        "pk": 2,
+        "fields": {
+            "value": "Customer/Potential Customer"
+        }
+    },
+    {
+        "model": "common.relationshiptopai",
+        "pk": 3,
+        "fields": {
+            "value": "Others - Please specify in Justification Field"
+        }
+    },
+    {
+        "model": "common.relationshiptopai",
+        "pk": 4,
+        "fields": {
+            "value": "PFU / Ricoh Group Company Employees"
+        }
+    },
+    {
+        "model": "common.relationshiptopai",
+        "pk": 5,
+        "fields": {
+            "value": "Supplise"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 1,
+        "fields": {
+            "value": "Alberta"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 2,
+        "fields": {
+            "value": "Barrie"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 3,
+        "fields": {
+            "value": "Bellevue"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 4,
+        "fields": {
+            "value": "Boston"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 5,
+        "fields": {
+            "value": "British Columbia"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 6,
+        "fields": {
+            "value": "CAN-Other Cities"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 7,
+        "fields": {
+            "value": "CAN-Toronto, Vancouver, and Calgary"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 8,
+        "fields": {
+            "value": "CANADA-Calgary"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 9,
+        "fields": {
+            "value": "CANADA-Other"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 10,
+        "fields": {
+            "value": "CANADA-Toronto"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 11,
+        "fields": {
+            "value": "CANADA-Vancouver"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 12,
+        "fields": {
+            "value": "Calgary"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 13,
+        "fields": {
+            "value": "Canada"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 14,
+        "fields": {
+            "value": "Chandler"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 15,
+        "fields": {
+            "value": "Chicago"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 16,
+        "fields": {
+            "value": "Chicoutimi?Jonquiere"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 17,
+        "fields": {
+            "value": "Edmonton"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 18,
+        "fields": {
+            "value": "Fredericton"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 19,
+        "fields": {
+            "value": "Gatineau"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 20,
+        "fields": {
+            "value": "Guelph"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 21,
+        "fields": {
+            "value": "Halifax"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 22,
+        "fields": {
+            "value": "JAPAN-Other"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 23,
+        "fields": {
+            "value": "JAPAN-Tokyo"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 24,
+        "fields": {
+            "value": "JAPAN-Yokohama"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 25,
+        "fields": {
+            "value": "Japan-Other Cities"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 26,
+        "fields": {
+            "value": "Japan-Yokohama, Tokyo"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 27,
+        "fields": {
+            "value": "Kanata"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 28,
+        "fields": {
+            "value": "Kingston"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 29,
+        "fields": {
+            "value": "Lethbridge"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 30,
+        "fields": {
+            "value": "London"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 31,
+        "fields": {
+            "value": "Los Angeles"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 32,
+        "fields": {
+            "value": "Manitoba"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 33,
+        "fields": {
+            "value": "Moncton"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 34,
+        "fields": {
+            "value": "Nanaimo"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 35,
+        "fields": {
+            "value": "New York City"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 36,
+        "fields": {
+            "value": "Ontario"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 37,
+        "fields": {
+            "value": "Other"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 38,
+        "fields": {
+            "value": "Ottawa"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 39,
+        "fields": {
+            "value": "Peterborough"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 40,
+        "fields": {
+            "value": "Philadelphia"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 41,
+        "fields": {
+            "value": "Quebec City"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 42,
+        "fields": {
+            "value": "Red Deer"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 43,
+        "fields": {
+            "value": "Regina"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 44,
+        "fields": {
+            "value": "San Francisco"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 45,
+        "fields": {
+            "value": "San Jose"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 46,
+        "fields": {
+            "value": "Santa Clara"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 47,
+        "fields": {
+            "value": "Saskatoon"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 48,
+        "fields": {
+            "value": "Scottsdale"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 49,
+        "fields": {
+            "value": "Seattle"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 50,
+        "fields": {
+            "value": "Sherbrooke"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 51,
+        "fields": {
+            "value": "St. Catharines?Niagara Falls"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 52,
+        "fields": {
+            "value": "St. John's"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 53,
+        "fields": {
+            "value": "Sudbury"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 54,
+        "fields": {
+            "value": "Sunnyvale"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 55,
+        "fields": {
+            "value": "Tokyo"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 56,
+        "fields": {
+            "value": "Toronto"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 57,
+        "fields": {
+            "value": "Trois-Rivieres"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 58,
+        "fields": {
+            "value": "USA-Bellevue"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 59,
+        "fields": {
+            "value": "USA-Bellevue/Seattle, WA"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 60,
+        "fields": {
+            "value": "USA-Boston"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 61,
+        "fields": {
+            "value": "USA-Boston, MA"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 62,
+        "fields": {
+            "value": "USA-Chicago"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 63,
+        "fields": {
+            "value": "USA-Chicago, IL"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 64,
+        "fields": {
+            "value": "USA-El Segundo"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 65,
+        "fields": {
+            "value": "USA-El Segundo/Los Angeles/Irvine, CA"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 66,
+        "fields": {
+            "value": "USA-Irvine"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 67,
+        "fields": {
+            "value": "USA-Los Angeles"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 68,
+        "fields": {
+            "value": "USA-New York City"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 69,
+        "fields": {
+            "value": "USA-New York City, NY"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 70,
+        "fields": {
+            "value": "USA-Other"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 71,
+        "fields": {
+            "value": "USA-Other Cities"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 72,
+        "fields": {
+            "value": "USA-Philadelphia"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 73,
+        "fields": {
+            "value": "USA-San Francisco Bay Area"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 74,
+        "fields": {
+            "value": "USA-San Jose"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 75,
+        "fields": {
+            "value": "USA-Santa Clara"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 76,
+        "fields": {
+            "value": "USA-Seattle"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 77,
+        "fields": {
+            "value": "USA-Sunnyvale"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 78,
+        "fields": {
+            "value": "USA-Sunnyvale/San Jose/Santa Clara, San Francisco, CA and Bay Area"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 79,
+        "fields": {
+            "value": "USA-Washington DC"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 80,
+        "fields": {
+            "value": "USA-Washington, DC"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 81,
+        "fields": {
+            "value": "Vancouver"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 82,
+        "fields": {
+            "value": "Victoria"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 83,
+        "fields": {
+            "value": "Washington DC"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 84,
+        "fields": {
+            "value": "Windsor"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 85,
+        "fields": {
+            "value": "Winnipeg"
+        }
+    },
+    {
+        "model": "common.city",
+        "pk": 86,
+        "fields": {
+            "value": "Yokohoma"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 1,
+        "fields": {
+            "country": "Japan",
+            "city": "Other Cities",
+            "amount": 16000,
+            "currency": "YEN"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 2,
+        "fields": {
+            "country": "USA",
+            "city": "Other Cities",
+            "amount": 175,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 3,
+        "fields": {
+            "country": "USA",
+            "city": "Bellevue/Seattle, WA",
+            "amount": 185,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 4,
+        "fields": {
+            "country": "USA",
+            "city": "El Segundo/Los Angeles/Irvine, CA",
+            "amount": 200,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 5,
+        "fields": {
+            "country": "USA",
+            "city": "Philadelphia",
+            "amount": 200,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 6,
+        "fields": {
+            "country": "USA",
+            "city": "Washington, DC",
+            "amount": 210,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 7,
+        "fields": {
+            "country": "USA",
+            "city": "Chicago, IL",
+            "amount": 225,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 8,
+        "fields": {
+            "country": "CAN",
+            "city": "Other Cities",
+            "amount": 230,
+            "currency": "CAD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 9,
+        "fields": {
+            "country": "CAN",
+            "city": "Toronto, Vancouver, and Calgary",
+            "amount": 245,
+            "currency": "CAD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 10,
+        "fields": {
+            "country": "Japan",
+            "city": "Yokohama, Tokyo",
+            "amount": 0,
+            "currency": ""
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 11,
+        "fields": {
+            "country": "USA",
+            "city": "Boston, MA",
+            "amount": 265,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 12,
+        "fields": {
+            "country": "USA",
+            "city": "New York City, NY",
+            "amount": 300,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.hoteldailybaserate",
+        "pk": 13,
+        "fields": {
+            "country": "USA",
+            "city": "Sunnyvale/San Jose/Santa Clara, San Francisco, CA and Bay Area",
+            "amount": 309,
+            "currency": "USD"
+        }
+    },
+    {
+        "model": "common.mileagerate",
+        "pk": 1,
+        "fields": {
+            "rate": 0.67,
+            "title": "PAI"
+        }
+    },
+    {
+        "model": "common.mileagerate",
+        "pk": 2,
+        "fields": {
+            "rate": 0.70,
+            "title": "PCI"
+        }
+    }
+]
