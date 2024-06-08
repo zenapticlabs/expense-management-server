@@ -33,7 +33,7 @@ SITE_ID = 1
 
 REST_USE_JWT = True
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = False
 
 AUTH_USER_MODEL = "users.User"
@@ -172,7 +172,7 @@ WSGI_APPLICATION = 'expense_management_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'expense',
+        'NAME': 'pfu_expense',
         'USER': 'root',
         'PASSWORD': 'password',
         'HOST': 'localhost',

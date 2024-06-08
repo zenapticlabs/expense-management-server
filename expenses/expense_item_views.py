@@ -1,4 +1,3 @@
-# expense_item_views.py
 import logging
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +13,13 @@ class ExpenseItemListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         report_id = self.kwargs['report_id']
         return ExpenseItem.objects.filter(report_id=report_id, report__user=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Include presigned URL in context for POST requests
+        if self.request.method == 'POST':
+            context['include_presigned_url'] = True
+        return context
 
     def perform_create(self, serializer):
         report_id = self.kwargs['report_id']
@@ -32,3 +38,10 @@ class ExpenseItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         report_id = self.kwargs['report_id']
         return ExpenseItem.objects.filter(report_id=report_id, report__user=self.request.user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        # Include presigned URL in context for PUT and PATCH requests
+        if self.request.method in ['PUT', 'PATCH']:
+            context['include_presigned_url'] = True
+        return context
