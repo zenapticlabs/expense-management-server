@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
@@ -42,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     cc_card = models.ForeignKey(CreditCard, null=True, blank=True, on_delete=models.SET_NULL)
+    verification_code = models.CharField(max_length=6, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -52,3 +54,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def generate_verification_code(self):
+        self.verification_code = str(random.randint(10000, 99999))
+        self.save()
+
+    def verify_code(self, code):
+        """Verify the provided code against the user's verification code"""
+        return self.verification_code == code
