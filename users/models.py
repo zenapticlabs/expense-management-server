@@ -57,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def generate_verification_code(self):
         self.verification_code = str(random.randint(10000, 99999))
+        print("========"+self.verification_code+"========")
         self.save()
 
     def verify_code(self, code):

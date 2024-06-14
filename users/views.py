@@ -48,12 +48,12 @@ class LoginView(APIView):
         
         user.generate_verification_code()
 
-        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-        call = client.calls.create(
-            twiml=f'<Response><Say>Your verification code is {' '.join(user.verification_code)}</Say></Response>',
-            to=user.phone_number.as_e164,
-            from_=settings.TWILIO_PHONE_NUMBER
-        )
+        # client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+        # call = client.calls.create(
+        #     twiml=f'<Response><Say>Your verification code is {' '.join(user.verification_code)}</Say></Response>',
+        #     to=user.phone_number.as_e164,
+        #     from_=settings.TWILIO_PHONE_NUMBER
+        # )
 
         return Response(
             {
