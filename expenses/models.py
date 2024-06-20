@@ -1,11 +1,13 @@
 # expenses/models.py
 
+import uuid
 from django.db import models
 from users.models import User
 from common.models import Airline, RentalAgency, CarType, MealCategory, RelationshipToPAI, City, HotelDailyBaseRate, MileageRate
 
 class ExpenseReport(models.Model):
     id = models.AutoField(primary_key=True)
+    report_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     report_number = models.CharField(max_length=20)
     report_status = models.CharField(max_length=100)
@@ -18,7 +20,7 @@ class ExpenseReport(models.Model):
     report_submit_date = models.DateField(null=True)
     integration_status = models.CharField(max_length=100)
     integration_date = models.DateField(null=True)
-    error_message = models.CharField(max_length=1000, null=True)
+    error = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -38,6 +40,7 @@ class ExpenseReport(models.Model):
 
 class ExpenseItem(models.Model):
     id = models.AutoField(primary_key=True)
+    item_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     report = models.ForeignKey(ExpenseReport, null=True, on_delete=models.CASCADE)
     expense_type = models.CharField(max_length=50)
     expense_date = models.DateField(null=True)

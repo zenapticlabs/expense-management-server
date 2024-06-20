@@ -12,7 +12,7 @@ class ExpenseItemListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         report_id = self.kwargs['report_id']
-        return ExpenseItem.objects.filter(report_id=report_id, report__user=self.request.user)
+        return ExpenseItem.objects.filter(report__report_id=report_id, report__user=self.request.user)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -25,7 +25,7 @@ class ExpenseItemListCreateView(generics.ListCreateAPIView):
         report_id = self.kwargs['report_id']
         logger.debug(f'Creating ExpenseItem for report_id: {report_id} and user: {self.request.user}')
         try:
-            report = ExpenseReport.objects.get(id=report_id, user=self.request.user)
+            report = ExpenseReport.objects.get(report_id=report_id, user=self.request.user)
             serializer.save(report=report)
         except ExpenseReport.DoesNotExist:
             logger.error(f'ExpenseReport with id {report_id} does not exist for user {self.request.user}')
@@ -34,10 +34,11 @@ class ExpenseItemListCreateView(generics.ListCreateAPIView):
 class ExpenseItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ExpenseItemSerializer
     permission_classes = [IsAuthenticated]
+    lookup_field = 'item_id'
 
     def get_queryset(self):
         report_id = self.kwargs['report_id']
-        return ExpenseItem.objects.filter(report_id=report_id, report__user=self.request.user)
+        return ExpenseItem.objects.filter(report__report_id=report_id, report__user=self.request.user)
 
     def get_serializer_context(self):
         context = super().get_serializer_context()

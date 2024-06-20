@@ -1,7 +1,7 @@
 # common/serializers.py
 
 from rest_framework import serializers
-from .models import Airline, RentalAgency, CarType, MealCategory, RelationshipToPAI, City, HotelDailyBaseRate, MileageRate
+from .models import Airline, ExchangeRate, RentalAgency, CarType, MealCategory, RelationshipToPAI, City, HotelDailyBaseRate, MileageRate
 
 class AirlineSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,9 +36,14 @@ class CitySerializer(serializers.ModelSerializer):
 class HotelDailyBaseRateSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelDailyBaseRate
-        fields = ['country', 'city', 'amount', 'currency']
+        fields = "__all__"
 
 class MileageRateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MileageRate
-        fields = ['rate', 'title']
+        fields = ['id', 'rate', 'title']
+        
+class ExchangeRateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ExchangeRate
+        fields = ['id', 'target_currency', 'rate', 'date_fetched']

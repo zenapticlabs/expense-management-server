@@ -1,4 +1,4 @@
-import random
+import uuid
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
@@ -34,16 +34,17 @@ class CreditCard(models.Model):
         return f'{self.cardholder_name} - {self.card_number[-4:]}'
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    phone_number = PhoneNumberField(default=None)
+    phone_number = PhoneNumberField(unique=True)
     currency = models.CharField(max_length=10, default="USD")
     department = models.CharField(max_length=50, null=True, blank=True, default=None)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     cc_card = models.ForeignKey(CreditCard, null=True, blank=True, on_delete=models.SET_NULL)
-    verification_code = models.CharField(max_length=6, null=True, blank=True)
+    last_2fa_time = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -54,12 +55,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-    
-    def generate_verification_code(self):
-        self.verification_code = str(random.randint(10000, 99999))
-        print("========"+self.verification_code+"========")
-        self.save()
-
-    def verify_code(self, code):
-        """Verify the provided code against the user's verification code"""
-        return self.verification_code == code

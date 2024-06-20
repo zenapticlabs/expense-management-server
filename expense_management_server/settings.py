@@ -110,8 +110,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),  # You can set this to 0 if you don't want refresh tokens
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=60),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
@@ -231,5 +231,6 @@ AWS_S3_BUCKET_NAME = 'pfu-expense-reciepts-test'
 
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', 'ACf7e71c4adc2b2a4a8164af9f27d11643')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', 'a32280a9d57d9ea967e42e044f6f06ad')
+TWILIO_VERIFY_SERVICE_SID = os.getenv('TWILIO_VERIFY_SERVICE_SID', 'VAfdb5283adbf118cb756ddfa7901855af')
 TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', '+15593176288')
 

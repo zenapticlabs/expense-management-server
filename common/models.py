@@ -1,6 +1,6 @@
 # common/models.py
-
 from django.db import models
+from django.utils import timezone
 
 class Airline(models.Model):
     value = models.CharField(max_length=200, unique=True)
@@ -78,3 +78,12 @@ class MileageRate(models.Model):
 
     def __str__(self):
         return f'{self.rate} {self.title}'
+    
+class ExchangeRate(models.Model):
+    target_currency = models.CharField(max_length=3)
+    rate = models.DecimalField(max_digits=20, decimal_places=6)
+    date_fetched = models.DateTimeField(default=timezone.now)
+    next_update_time = models.DateTimeField()
+    
+    class Meta:
+        db_table = 'exchange_rate'

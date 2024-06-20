@@ -1,29 +1,46 @@
 import time
+from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
-
+from common.models import Airline, CarType, City, HotelDailyBaseRate, MealCategory, MileageRate, RelationshipToPAI, RentalAgency
 from expense_management_server import settings
 from expenses.utils import generate_presigned_url
 from .models import ExpenseReport, ExpenseItem
 
-from rest_framework import serializers
+class HotelDailyBaseRateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelDailyBaseRate
+        fields = '__all__'
 
-import time
-from rest_framework import serializers
-from expense_management_server import settings
-from expenses.utils import generate_presigned_url
-from .models import ExpenseItem
+class MileageRateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MileageRate
+        fields = '__all__'
 
 class ExpenseItemSerializer(serializers.ModelSerializer):
-    airline = serializers.SerializerMethodField()
-    rental_agency = serializers.SerializerMethodField()
-    car_type = serializers.SerializerMethodField()
-    meal_category = serializers.SerializerMethodField()
-    relationship_to_pai = serializers.SerializerMethodField()
-    city = serializers.SerializerMethodField()
-    hotel_daily_base_rate = serializers.SerializerMethodField()
-    mileage_rate = serializers.SerializerMethodField()
+    id = serializers.UUIDField(source='item_id', read_only=True)
+    airline = serializers.CharField(write_only=True, required=False, allow_null=True)
+    rental_agency = serializers.CharField(write_only=True, required=False, allow_null=True)
+    car_type = serializers.CharField(write_only=True, required=False, allow_null=True)
+    meal_category = serializers.CharField(write_only=True, required=False, allow_null=True)
+    relationship_to_pai = serializers.CharField(write_only=True, required=False, allow_null=True)
+    city = serializers.CharField(write_only=True, required=False, allow_null=True)
+    hotel_daily_base_rate = serializers.IntegerField(write_only=True, required=False, allow_null=True)
+    mileage_rate = serializers.IntegerField(write_only=True, required=False, allow_null=True)
     presigned_url = serializers.SerializerMethodField()
     filename = serializers.CharField(write_only=True, allow_null=True, required=False)
+
+    def _get_instance(self, model, value=None, pk=None):
+        if pk is not None:
+            try:
+                return model.objects.get(pk=pk)
+            except model.DoesNotExist:
+                raise ValidationError(f'Invalid input: {model.__name__} with ID "{pk}" does not exist.')
+        elif value is not None:
+            try:
+                return model.objects.get(value=value)
+            except model.DoesNotExist:
+                raise ValidationError(f'Invalid input: {model.__name__} with value "{value}" does not exist.')
+        return None
 
     class Meta:
         model = ExpenseItem
@@ -47,26 +64,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
     def get_city(self, obj):
         return obj.city.value if obj.city else None
 
-    def get_hotel_daily_base_rate(self, obj):
-        if obj.hotel_daily_base_rate:
-            return {
-                "country": obj.hotel_daily_base_rate.country,
-                "city": obj.hotel_daily_base_rate.city,
-                "amount": obj.hotel_daily_base_rate.amount,
-                "currency": obj.hotel_daily_base_rate.currency,
-            }
-        return None
-
-    def get_mileage_rate(self, obj):
-        if obj.mileage_rate:
-            return {
-                "rate": obj.mileage_rate.rate,
-                "title": obj.mileage_rate.title,
-            }
-        return None
-
     def get_presigned_url(self, obj):
-        # Only generate presigned URL if context indicates it's a write operation
         if self.context.get('include_presigned_url', False):
             if obj.s3_path:
                 bucket_name = settings.AWS_S3_BUCKET_NAME
@@ -74,9 +72,18 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         return None
 
     def create(self, validated_data):
+        validated_data['airline'] = self._get_instance(Airline, validated_data.pop('airline', None))
+        validated_data['rental_agency'] = self._get_instance(RentalAgency, validated_data.pop('rental_agency', None))
+        validated_data['car_type'] = self._get_instance(CarType, validated_data.pop('car_type', None))
+        validated_data['meal_category'] = self._get_instance(MealCategory, validated_data.pop('meal_category', None))
+        validated_data['relationship_to_pai'] = self._get_instance(RelationshipToPAI, validated_data.pop('relationship_to_pai', None))
+        validated_data['city'] = self._get_instance(City, validated_data.pop('city', None))
+        validated_data['hotel_daily_base_rate'] = self._get_instance(HotelDailyBaseRate, pk=validated_data.pop('hotel_daily_base_rate', None))
+        validated_data['mileage_rate'] = self._get_instance(MileageRate, pk=validated_data.pop('mileage_rate', None))
+
         filename = validated_data.pop('filename', None)
         user_id = self.context['request'].user.id
-        report_id = validated_data["report"].id
+        report_id = validated_data["report"].report_id
         epoch_timestamp = int(time.time())
         presigned_url = None
         validated_data['s3_path'] = None
@@ -94,13 +101,23 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         presigned_url = None
         if filename:
             user_id = self.context['request'].user.id
-            report_id = instance.report.id
+            report_id = instance.report.report_id
             epoch_timestamp = int(time.time())
             object_name = f'{user_id}/{report_id}/{epoch_timestamp}_{filename}'
             bucket_name = settings.AWS_S3_BUCKET_NAME
             presigned_url = generate_presigned_url(bucket_name, object_name)
             instance.s3_path = object_name
             instance.presigned_url = presigned_url
+            
+        instance.airline = self._get_instance(Airline, validated_data.get('airline', instance.airline))
+        instance.rental_agency = self._get_instance(RentalAgency, validated_data.get('rental_agency', instance.rental_agency))
+        instance.car_type = self._get_instance(CarType, validated_data.get('car_type', instance.car_type))
+        instance.meal_category = self._get_instance(MealCategory, validated_data.get('meal_category', instance.meal_category))
+        instance.relationship_to_pai = self._get_instance(RelationshipToPAI, validated_data.get('relationship_to_pai', instance.relationship_to_pai))
+        instance.city = self._get_instance(City, validated_data.get('city', instance.city))
+        instance.hotel_daily_base_rate = self._get_instance(HotelDailyBaseRate, pk=validated_data.get('hotel_daily_base_rate', instance.hotel_daily_base_rate and instance.hotel_daily_base_rate.id))
+        instance.mileage_rate = self._get_instance(MileageRate, pk=validated_data.get('mileage_rate', instance.mileage_rate and instance.mileage_rate.id))
+
         return super().update(instance, validated_data)
 
     def to_representation(self, instance):
@@ -110,20 +127,46 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         else:
             representation['filename'] = None
 
-        # Only include presigned URL in representation if it was created or updated
         if self.context.get('include_presigned_url', False) and hasattr(instance, 'presigned_url') and instance.presigned_url:
             representation['presigned_url'] = instance.presigned_url
+            
+        representation['id'] = representation.pop('item_id')
+        representation['airline'] = self.get_airline(instance)
+        representation['rental_agency'] = self.get_rental_agency(instance)
+        representation['car_type'] = self.get_car_type(instance)
+        representation['meal_category'] = self.get_meal_category(instance)
+        representation['relationship_to_pai'] = self.get_relationship_to_pai(instance)
+        representation['city'] = self.get_city(instance)
+        representation['hotel_daily_base_rate'] = HotelDailyBaseRateSerializer(instance.hotel_daily_base_rate).data if instance.hotel_daily_base_rate else None
+        representation['mileage_rate'] = MileageRateSerializer(instance.mileage_rate).data if instance.mileage_rate else None
+
         return representation
 
 class ExpenseReportSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source='report_id', read_only=True)
     user = serializers.ReadOnlyField(source='user.email')
     report_number = serializers.ReadOnlyField()
     report_status = serializers.ReadOnlyField()
     report_submit_date = serializers.ReadOnlyField()
     integration_status = serializers.ReadOnlyField()
     integration_date = serializers.ReadOnlyField()
+    report_amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
 
     class Meta:
         model = ExpenseReport
-        exclude = ['error_message']
+        fields = '__all__'
         
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['id'] = representation.pop('report_id')
+        return representation
+
+    def create(self, validated_data):
+        if 'report_amount' not in validated_data:
+            validated_data['report_amount'] = 0.0
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        if 'report_amount' not in validated_data:
+            validated_data['report_amount'] = instance.report_amount
+        return super().update(instance, validated_data)

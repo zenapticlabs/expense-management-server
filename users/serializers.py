@@ -8,6 +8,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['email', 'first_name', 'last_name', 'phone_number', 'currency', 'department', 'password']
         extra_kwargs = {'password': {'write_only': True}}
+        
+    def validate(self, data):
+        email = data.get('email')
+        phone_number = data.get('phone_number')
+
+        # Check if user with the same email already exists and is active
+        if User.objects.filter(email=email, is_active=True).exists():
+            raise serializers.ValidationError({'email': 'A user with this email already exists.'})
+
+        # Check if user with the same phone number already exists and is active
+        if User.objects.filter(phone_number=phone_number, is_active=True).exists():
+            raise serializers.ValidationError({'phone_number': 'A user with this phone number already exists.'})
+
+        return data
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

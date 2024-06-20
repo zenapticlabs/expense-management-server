@@ -1,7 +1,7 @@
 # common/urls.py
 
 from django.urls import path
-from .views import AirlineListView, RentalAgencyListView, CarTypeListView, MealCategoryListView, RelationshipToPAIListView, CityListView, HotelDailyBaseRateListView, MileageRateListView
+from .views import AirlineListView, ExchangeRateListView, RentalAgencyListView, CarTypeListView, MealCategoryListView, RelationshipToPAIListView, CityListView, HotelDailyBaseRateListView, MileageRateListView
 
 app_name = 'common'
 
@@ -14,4 +14,5 @@ urlpatterns = [
     path('cities/', CityListView.as_view(), name='city-list'),
     path('hotel-daily-base-rates/', HotelDailyBaseRateListView.as_view(), name='hotel-daily-base-rate-list'),
     path('mileage-rates/', MileageRateListView.as_view(), name='mileage-rate-list'),
+    path('exchange-rates/', ExchangeRateListView.as_view(), name='exchange-rates'),
 ]
