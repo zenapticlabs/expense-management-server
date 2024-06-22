@@ -18,6 +18,8 @@ class MileageRateSerializer(serializers.ModelSerializer):
 
 class ExpenseItemSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source='item_id', read_only=True)
+    justification = serializers.CharField(required=False, allow_blank=True)
+    note = serializers.CharField(required=False, allow_blank=True)
     airline = serializers.CharField(write_only=True, required=False, allow_null=True)
     rental_agency = serializers.CharField(write_only=True, required=False, allow_null=True)
     car_type = serializers.CharField(write_only=True, required=False, allow_null=True)
