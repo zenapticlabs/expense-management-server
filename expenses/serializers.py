@@ -1,7 +1,8 @@
+from decimal import Decimal
 import time
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
-from common.models import Airline, CarType, City, HotelDailyBaseRate, MealCategory, MileageRate, RelationshipToPAI, RentalAgency
+from common.models import Airline, CarType, City, ExchangeRate, HotelDailyBaseRate, MealCategory, MileageRate, RelationshipToPAI, RentalAgency
 from expense_management_server import settings
 from expenses.utils import generate_presigned_url
 from .models import ExpenseReport, ExpenseItem
@@ -72,8 +73,41 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
                 bucket_name = settings.AWS_S3_BUCKET_NAME
                 return generate_presigned_url(bucket_name, obj.s3_path)
         return None
+    
+    def _get_exchange_rate(self, from_currency, to_currency):
+        if from_currency == to_currency:
+            return Decimal(1)
+        try:
+            latest_rate = ExchangeRate.objects.latest('date_fetched')
+            from_rate = ExchangeRate.objects.get(target_currency=from_currency, date_fetched=latest_rate.date_fetched).rate
+            to_rate = ExchangeRate.objects.get(target_currency=to_currency, date_fetched=latest_rate.date_fetched).rate
+            return to_rate / from_rate
+        except ExchangeRate.DoesNotExist:
+            raise ValidationError(f'Exchange rate for {from_currency} to {to_currency} does not exist.')
+        
+    def _update_report_amount(self, report, old_amount, new_amount, old_currency, new_currency):
+        print(old_amount, new_amount, old_currency, new_currency)
+        # Subtract the old amount
+        if old_amount is not None:
+            old_rate = self._get_exchange_rate(old_currency, report.report_currency)
+            old_converted_amount = old_amount * old_rate
+            report.report_amount -= old_converted_amount
+
+        # Add the new amount
+        if new_amount is not None:
+            new_rate = self._get_exchange_rate(new_currency, report.report_currency)
+            new_converted_amount = new_amount * new_rate
+            report.report_amount += new_converted_amount
+        
+        report.save()
 
     def create(self, validated_data):
+        report = validated_data['report']
+        receipt_amount = Decimal(validated_data['receipt_amount'])
+        receipt_currency = validated_data['receipt_currency']
+
+        self._update_report_amount(report, None, receipt_amount, None, receipt_currency)
+        
         validated_data['airline'] = self._get_instance(Airline, validated_data.pop('airline', None))
         validated_data['rental_agency'] = self._get_instance(RentalAgency, validated_data.pop('rental_agency', None))
         validated_data['car_type'] = self._get_instance(CarType, validated_data.pop('car_type', None))
@@ -99,6 +133,15 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         return expense_item
 
     def update(self, instance, validated_data):
+        old_receipt_amount = Decimal(instance.receipt_amount)
+        old_receipt_currency = instance.receipt_currency
+
+        new_receipt_amount = Decimal(validated_data.get('receipt_amount', old_receipt_amount))
+        new_receipt_currency = validated_data.get('receipt_currency', old_receipt_currency)
+
+        # Update the report amount
+        self._update_report_amount(instance.report, old_receipt_amount, new_receipt_amount, old_receipt_currency, new_receipt_currency)
+        
         filename = validated_data.pop('filename', None)
         presigned_url = None
         if filename:

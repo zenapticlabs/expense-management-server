@@ -7,7 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from users.models import User
-from users.utils import check_verification_code, send_verification_code
+from users.utils import check_verification_code, is_phone_number_verified, send_verification_code
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -24,9 +24,9 @@ class RegisterView(generics.CreateAPIView):
         User.objects.filter(phone_number=phone_number, is_active=False).delete()
 
         if User.objects.filter(email=email, is_active=True).exists():
-            return Response({'email': 'A user with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'email': 'A user with this email already exists.'}, status=status.HTTP_409_CONFLICT)
         if User.objects.filter(phone_number=phone_number, is_active=True).exists():
-            return Response({'phone_number': 'A user with this phone number already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'phone_number': 'A user with this phone number already exists.'}, status=status.HTTP_409_CONFLICT)
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -35,11 +35,16 @@ class RegisterView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = serializer.save()
         user.is_active = False
-
-        send_verification_code(user.phone_number.as_e164)
+        
+        if is_phone_number_verified(user.phone_number.as_e164):
+            send_verification_code(user.phone_number.as_e164)
+            response = {'detail': 'Two-factor authentication required'}
+        else:
+            user.is_active = True
+            response = {'detail': 'Phone number not verified. Please verify your phone number with Twilio.'}
         user.save()
 
-        return Response({'detail': 'Verification code sent.'}, status=status.HTTP_201_CREATED)
+        return Response(response, status=status.HTTP_201_CREATED)
 
 class VerifyRegistrationCodeView(APIView):
     permission_classes = [AllowAny]
@@ -79,7 +84,7 @@ class LoginView(APIView):
         if user is None:
             return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if self.is_2fa_required(user):
+        if self.is_2fa_required(user) and is_phone_number_verified(user.phone_number.as_e164):
             send_verification_code(user.phone_number.as_e164)
             return Response(
                 {
