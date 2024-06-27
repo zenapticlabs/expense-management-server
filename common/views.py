@@ -69,9 +69,7 @@ class ExchangeRateListView(generics.ListAPIView):
         else:
             conversion_rates = {rate.target_currency: rate.rate for rate in queryset}
 
-        return Response({
-            "conversion_rates": conversion_rates
-        }, status=status.HTTP_200_OK)
+        return Response(conversion_rates, status=status.HTTP_200_OK)
 
     def update_exchange_rates(self):
         response = requests.get('https://open.er-api.com/v6/latest/USD')

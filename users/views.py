@@ -101,7 +101,7 @@ class LoginView(APIView):
             }, status=status.HTTP_200_OK)
         
     def is_2fa_required(self, user):
-        if not user.last_2fa_time or (timezone.now() - user.last_2fa_time) > timedelta(days=1):
+        if not hasattr(user, 'last_2fa_time') or not user.last_2fa_time or (timezone.now() - user.last_2fa_time) > timedelta(days=1):
             return True
         return False
 
@@ -114,7 +114,8 @@ class VerifyCodeView(APIView):
         try:
             user = User.objects.get(email=email)
             if check_verification_code(user.phone_number.as_e164, code):
-                user.last_2fa_time = timezone.now()
+                if hasattr(user, 'last_2fa_time'):
+                    user.last_2fa_time = timezone.now()
                 user.save()
                 refresh = RefreshToken.for_user(user)
                 return Response({

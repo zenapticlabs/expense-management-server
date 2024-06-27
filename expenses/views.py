@@ -1,5 +1,7 @@
 # views.py
-from rest_framework import generics
+from django.utils import timezone
+from rest_framework import generics, status
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import ExpenseReport
 from .serializers import ExpenseReportSerializer
@@ -37,3 +39,20 @@ class ExpenseReportDetailView(generics.RetrieveUpdateDestroyAPIView):
             integration_date=serializer.instance.integration_date,
             error=serializer.instance.error
         )
+        
+class SubmitReportView(generics.UpdateAPIView):
+    serializer_class = ExpenseReportSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'report_id'
+
+    def get_queryset(self):
+        return ExpenseReport.objects.filter(user=self.request.user, report_status="Open")
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.report_status = "Submitted"
+        instance.report_submit_date = timezone.now()
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)

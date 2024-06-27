@@ -105,8 +105,6 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         report = validated_data['report']
         receipt_amount = Decimal(validated_data['receipt_amount'])
         receipt_currency = validated_data['receipt_currency']
-
-        self._update_report_amount(report, None, receipt_amount, None, receipt_currency)
         
         validated_data['airline'] = self._get_instance(Airline, validated_data.pop('airline', None))
         validated_data['rental_agency'] = self._get_instance(RentalAgency, validated_data.pop('rental_agency', None))
@@ -130,6 +128,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
             validated_data['s3_path'] = object_name
         expense_item = super().create(validated_data)
         expense_item.presigned_url = presigned_url
+        self._update_report_amount(report, None, receipt_amount, None, receipt_currency)
         return expense_item
 
     def update(self, instance, validated_data):
@@ -138,9 +137,6 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
 
         new_receipt_amount = Decimal(validated_data.get('receipt_amount', old_receipt_amount))
         new_receipt_currency = validated_data.get('receipt_currency', old_receipt_currency)
-
-        # Update the report amount
-        self._update_report_amount(instance.report, old_receipt_amount, new_receipt_amount, old_receipt_currency, new_receipt_currency)
         
         filename = validated_data.pop('filename', None)
         presigned_url = None
@@ -153,7 +149,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
             presigned_url = generate_presigned_url(bucket_name, object_name)
             instance.s3_path = object_name
             instance.presigned_url = presigned_url
-            
+
         instance.airline = self._get_instance(Airline, validated_data.get('airline', instance.airline))
         instance.rental_agency = self._get_instance(RentalAgency, validated_data.get('rental_agency', instance.rental_agency))
         instance.car_type = self._get_instance(CarType, validated_data.get('car_type', instance.car_type))
@@ -162,14 +158,16 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         instance.city = self._get_instance(City, validated_data.get('city', instance.city))
         instance.hotel_daily_base_rate = self._get_instance(HotelDailyBaseRate, pk=validated_data.get('hotel_daily_base_rate', instance.hotel_daily_base_rate and instance.hotel_daily_base_rate.id))
         instance.mileage_rate = self._get_instance(MileageRate, pk=validated_data.get('mileage_rate', instance.mileage_rate and instance.mileage_rate.id))
-
-        return super().update(instance, validated_data)
+        updated = super().update(instance, validated_data)
+        self._update_report_amount(instance.report, old_receipt_amount, new_receipt_amount, old_receipt_currency, new_receipt_currency)
+        return updated
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.s3_path:
             representation['filename'] = instance.s3_path.split('/')[-1]
         else:
+            print("Doesnt Exist")
             representation['filename'] = None
 
         if self.context.get('include_presigned_url', False) and hasattr(instance, 'presigned_url') and instance.presigned_url:
