@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import ExpenseReport
 from .serializers import ExpenseReportSerializer
+from rest_framework.permissions import IsAdminUser
 
 # ExpenseReport views
 class ExpenseReportListCreateView(generics.ListCreateAPIView):
@@ -12,6 +13,8 @@ class ExpenseReportListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return ExpenseReport.objects.all()
         return ExpenseReport.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
@@ -28,6 +31,8 @@ class ExpenseReportDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'report_id'
 
     def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return ExpenseReport.objects.all()
         return ExpenseReport.objects.filter(user=self.request.user)
     
     def perform_update(self, serializer):
@@ -46,6 +51,8 @@ class SubmitReportView(generics.UpdateAPIView):
     lookup_field = 'report_id'
 
     def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return ExpenseReport.objects.all()
         return ExpenseReport.objects.filter(user=self.request.user, report_status="Open")
 
     def update(self, request, *args, **kwargs):
@@ -56,3 +63,20 @@ class SubmitReportView(generics.UpdateAPIView):
 
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class UpdateReportStatusView(generics.UpdateAPIView):
+    serializer_class = ExpenseReportSerializer
+    permission_classes = [IsAdminUser]
+    lookup_field = 'report_id'
+
+    def get_queryset(self):
+        return ExpenseReport.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.report_status = request.data.get("report_status", instance.report_status)
+        instance.save()
+
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

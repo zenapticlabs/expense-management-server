@@ -187,7 +187,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
 
 class ExpenseReportSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source='report_id', read_only=True)
-    user = serializers.ReadOnlyField(source='user.email')
+    user = serializers.ReadOnlyField(source='user.id')
     report_number = serializers.ReadOnlyField()
     report_status = serializers.ReadOnlyField()
     report_submit_date = serializers.ReadOnlyField()

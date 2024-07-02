@@ -55,8 +55,8 @@ class VerifyRegistrationCodeView(APIView):
         try:
             user = User.objects.get(email=email)
             if check_verification_code(user.phone_number.as_e164, code):
-                user.verification_code = None  # Clear the code after successful verification
-                user.is_active = True  # Activate the user
+                user.verification_code = None
+                user.is_active = True
                 user.save()
                 refresh = RefreshToken.for_user(user)
                 return Response({
@@ -84,7 +84,7 @@ class LoginView(APIView):
         if user is None:
             return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if self.is_2fa_required(user) and is_phone_number_verified(user.phone_number.as_e164):
+        if user.phone_number and self.is_2fa_required(user) and is_phone_number_verified(user.phone_number.as_e164):
             send_verification_code(user.phone_number.as_e164)
             return Response(
                 {

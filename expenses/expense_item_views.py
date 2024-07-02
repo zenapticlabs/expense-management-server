@@ -17,6 +17,8 @@ class ExpenseItemListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         report_id = self.kwargs['report_id']
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return ExpenseItem.objects.filter(report__report_id=report_id)
         return ExpenseItem.objects.filter(report__report_id=report_id, report__user=self.request.user)
 
     def get_serializer_context(self):
@@ -43,6 +45,8 @@ class ExpenseItemDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         report_id = self.kwargs['report_id']
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return ExpenseItem.objects.filter(report__report_id=report_id)
         return ExpenseItem.objects.filter(report__report_id=report_id, report__user=self.request.user)
 
     def get_serializer_context(self):
@@ -57,7 +61,10 @@ class ExpenseItemFileDownloadView(APIView):
 
     def get(self, request, report_id, item_id, *args, **kwargs):
         try:
-            expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id, report__user=request.user)
+            if self.request.user.is_staff or self.request.user.is_superuser:
+                expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id)
+            else:
+                expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id, report__user=request.user)
             if expense_item.s3_path:
                 bucket_name = settings.AWS_S3_BUCKET_NAME
                 presigned_url = generate_presigned_url(bucket_name, expense_item.s3_path, 'get_object')
@@ -75,7 +82,10 @@ class ExpenseItemFileDeleteView(generics.GenericAPIView):
 
     def delete(self, request, report_id, item_id, *args, **kwargs):
         try:
-            expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id, report__user=request.user)
+            if self.request.user.is_staff or self.request.user.is_superuser:
+                expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id)
+            else:
+                expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id, report__user=request.user)
             if expense_item.s3_path:
                 delete_s3_file(settings.AWS_S3_BUCKET_NAME, expense_item.s3_path)
                 expense_item.s3_path = None
