@@ -3,7 +3,7 @@ import time
 from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from common.models import Airline, CarType, City, ExchangeRate, HotelDailyBaseRate, MealCategory, MileageRate, RelationshipToPAI, RentalAgency
-from expense_management_server import settings
+from Template import settings
 from expenses.utils import generate_presigned_url
 from .models import ExpenseReport, ExpenseItem
 
