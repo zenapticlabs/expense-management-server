@@ -8,8 +8,23 @@ from datetime import timedelta
 
 from users.models import User
 from users.utils import check_verification_code, is_phone_number_verified, send_verification_code
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from .serializers import CreditCardSerializer, RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+
+class AddCreditCardView(generics.CreateAPIView):
+    serializer_class = CreditCardSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        credit_card = serializer.save()
+        request.user.cc_card = credit_card
+        request.user.save()
+        return Response({
+            'detail': 'Credit card added successfully',
+            'credit_card': CreditCardSerializer(credit_card).data
+        }, status=status.HTTP_201_CREATED)
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()

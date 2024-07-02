@@ -1,7 +1,13 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
+from users.models import CreditCard
 
 User = get_user_model()
+
+class CreditCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditCard
+        fields = ['card_number', 'expiration_date']
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,7 +47,9 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Invalid login credentials")
     
 class UserSerializer(serializers.ModelSerializer):
+    cc_card = CreditCardSerializer(read_only=True)
+    
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'phone_number', 'currency', 'department', 'created_at', 'updated_at']
+        fields = ['id', 'email', 'first_name', 'last_name', 'phone_number', 'currency', 'department', 'cc_card', 'created_at', 'updated_at']
 
