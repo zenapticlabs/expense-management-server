@@ -4,7 +4,7 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
-from Template import settings
+from django.conf import settings
 from expenses.utils import delete_s3_file, generate_presigned_url
 from .models import ExpenseItem, ExpenseReport
 from .serializers import ExpenseItemSerializer
