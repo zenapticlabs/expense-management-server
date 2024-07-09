@@ -19,6 +19,7 @@ from django.urls import include, path
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework.permissions import AllowAny
+from Template.views import health_check
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -30,8 +31,8 @@ schema_view = get_schema_view(
     permission_classes=(AllowAny,),
 )
 
-
 urlpatterns = [
+    path('', health_check, name='health-check'),
     path('admin/', admin.site.urls),
     path('api/', include('expenses.urls')),
     path('api/auth/', include('users.urls')),

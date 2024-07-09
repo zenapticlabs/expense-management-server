@@ -150,14 +150,14 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
             instance.s3_path = object_name
             instance.presigned_url = presigned_url
 
-        instance.airline = self._get_instance(Airline, validated_data.get('airline', instance.airline))
-        instance.rental_agency = self._get_instance(RentalAgency, validated_data.get('rental_agency', instance.rental_agency))
-        instance.car_type = self._get_instance(CarType, validated_data.get('car_type', instance.car_type))
-        instance.meal_category = self._get_instance(MealCategory, validated_data.get('meal_category', instance.meal_category))
-        instance.relationship_to_pai = self._get_instance(RelationshipToPAI, validated_data.get('relationship_to_pai', instance.relationship_to_pai))
-        instance.city = self._get_instance(City, validated_data.get('city', instance.city))
-        instance.hotel_daily_base_rate = self._get_instance(HotelDailyBaseRate, pk=validated_data.get('hotel_daily_base_rate', instance.hotel_daily_base_rate and instance.hotel_daily_base_rate.id))
-        instance.mileage_rate = self._get_instance(MileageRate, pk=validated_data.get('mileage_rate', instance.mileage_rate and instance.mileage_rate.id))
+        instance.airline = self._get_instance(Airline, value=validated_data.pop('airline', None)) or instance.airline
+        instance.rental_agency = self._get_instance(RentalAgency, value=validated_data.pop('rental_agency', None)) or instance.rental_agency
+        instance.car_type = self._get_instance(CarType, value=validated_data.pop('car_type', None)) or instance.car_type
+        instance.meal_category = self._get_instance(MealCategory, value=validated_data.pop('meal_category', None)) or instance.meal_category
+        instance.relationship_to_pai = self._get_instance(RelationshipToPAI, value=validated_data.pop('relationship_to_pai', None)) or instance.relationship_to_pai
+        instance.city = self._get_instance(City, value=validated_data.pop('city', None)) or instance.city
+        instance.hotel_daily_base_rate = self._get_instance(HotelDailyBaseRate, pk=validated_data.pop('hotel_daily_base_rate', None)) or instance.hotel_daily_base_rate
+        instance.mileage_rate = self._get_instance(MileageRate, pk=validated_data.pop('mileage_rate', None)) or instance.mileage_rate
         updated = super().update(instance, validated_data)
         self._update_report_amount(instance.report, old_receipt_amount, new_receipt_amount, old_receipt_currency, new_receipt_currency)
         return updated
