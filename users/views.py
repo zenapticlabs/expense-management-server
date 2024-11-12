@@ -99,7 +99,7 @@ class LoginView(APIView):
         if user is None:
             return Response({'error': 'Invalid email or password'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if user.phone_number and self.is_2fa_required(user) and is_phone_number_verified(user.phone_number.as_e164):
+        if user.phone_number and self.is_2fa_required(user):
             send_verification_code(user.phone_number.as_e164)
             return Response(
                 {

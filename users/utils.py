@@ -1,5 +1,8 @@
 from twilio.rest import Client
 from django.conf import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 def is_phone_number_verified(phone_number):
     client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
@@ -12,12 +15,16 @@ def is_phone_number_verified(phone_number):
     return False
 
 def send_verification_code(phone_number, channel='sms'):
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-    verification = client.verify.services(settings.TWILIO_VERIFY_SERVICE_SID).verifications.create(
-        to=phone_number,
-        channel=channel
-    )
-    return verification
+    try:
+        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+        verification = client.verify.services(settings.TWILIO_VERIFY_SERVICE_SID).verifications.create(
+            to=phone_number,
+            channel=channel
+        )
+        return verification
+    except Exception as e:
+        logger.error(e)
+        return None
 
 def check_verification_code(phone_number, code):
     client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
