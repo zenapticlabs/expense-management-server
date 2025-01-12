@@ -17,8 +17,9 @@ idna==3.7
 inflection==0.5.1
 jmespath==1.0.1
 multidict==6.0.5
-mysql-connector==2.2.9
-mysqlclient==2.2.3
+dj-database-url==2.2.0
+#mysql-connector==2.2.9
+#mysqlclient==2.2.3
 packaging==24.0
 phonenumbers==8.13.38
 PyJWT==2.8.0
