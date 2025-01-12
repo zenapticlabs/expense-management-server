@@ -64,7 +64,7 @@ LOGGING = {
     }
 }
 
-if os.environ.get('VERCEL', False) != 'True':
+if os.environ.get('VERCEL', 'False') == 'False':
     LOGGING['handlers']['file'] = {
         'level': 'DEBUG',
         'class': 'logging.FileHandler',
