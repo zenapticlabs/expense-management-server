@@ -31,13 +31,13 @@ jobs:
         run: |
           python manage.py migrate
 
-      - name: Load fixture data
+      - name: Load Fixture Data and Create Superuser
         env:
           DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
           VERCEL: ${{ vars.VERCEL }}
         run: |
-          python manage.py loaddata fixtures/initial_data.json
+          python manage.py check_and_load_fixture fixtures/initial_data.json
 
       - name: Collect static files
         env:
