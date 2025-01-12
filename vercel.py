@@ -1,0 +1,1 @@
+from Template.wsgi import application as app
