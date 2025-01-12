@@ -21,6 +21,7 @@
       }
     ],
     "env": {
-      "DJANGO_SETTINGS_MODULE": "Template.settings"
+      "DJANGO_SETTINGS_MODULE": "Template.settings",
+      "VERCEL": "True"
     }
   }
