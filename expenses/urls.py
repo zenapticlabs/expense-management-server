@@ -4,7 +4,7 @@ from .expense_item_views import ExpenseItemFileDeleteView, ExpenseItemFileDownlo
 
 urlpatterns = [
     # ExpenseReport URLs
-    path('reports/', ExpenseReportListCreateView.as_view(), name='expense-report-list-create'),
+    path('reports', ExpenseReportListCreateView.as_view(), name='expense-report-list-create'),
     re_path(r'^reports/(?P<report_id>[0-9a-f-]+)/$', ExpenseReportDetailView.as_view(), name='expense-report-detail'),
     re_path(r'^reports/(?P<report_id>[0-9a-f-]+)/submit/$', SubmitReportView.as_view(), name='submit-report'),
     re_path(r'^reports/(?P<report_id>[0-9a-f-]+)/status/$', UpdateReportStatusView.as_view(), name='update-report-status'),
