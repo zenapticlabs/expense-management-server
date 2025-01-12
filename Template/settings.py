@@ -59,10 +59,19 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['console', 'file'],
+        'handlers': ['console'],
         'level': 'DEBUG',
     }
 }
+
+if os.environ.get('VERCEL', False) != 'True':
+    LOGGING['handlers']['file'] = {
+        'level': 'DEBUG',
+        'class': 'logging.FileHandler',
+        'filename': os.path.join(BASE_DIR, 'debug.log'),
+        'formatter': 'verbose',
+    }
+    LOGGING['root']['handlers'].append('file')
 
 # Application definition
 
