@@ -33,8 +33,8 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', health_check, name='health-check'),
-    path('admin', admin.site.urls),
-    path('api', include([
+    path('admin/', admin.site.urls),
+    path('api/', include([
         path('', include('expenses.urls')),
         path('auth', include('users.urls')),
         path('common', include('common.urls')),
