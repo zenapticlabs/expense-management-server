@@ -156,7 +156,7 @@ WSGI_APPLICATION = 'Template.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-if os.environ.get('VERCEL', 'False') == 'False':
+if os.environ.get('VERCEL', 'False') == 'True':
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
