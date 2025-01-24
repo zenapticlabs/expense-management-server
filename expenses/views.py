@@ -35,15 +35,16 @@ class ExpenseReportDetailView(generics.RetrieveUpdateDestroyAPIView):
             return ExpenseReport.objects.all()
         return ExpenseReport.objects.filter(user=self.request.user)
     
-    def perform_update(self, serializer):
-        serializer.save(
-            user=self.request.user,
-            report_status=serializer.instance.report_status,
-            report_submit_date=serializer.instance.report_submit_date,
-            integration_status=serializer.instance.integration_status,
-            integration_date=serializer.instance.integration_date,
-            error=serializer.instance.error
-        )
+    # def perform_update(self, serializer):
+    #     print(serializer.validated_data)
+    #     serializer.save(
+    #         user=self.request.user,
+    #         report_status=serializer.validated_data.report_status,
+    #         report_submit_date=serializer.validated_data.report_submit_date,
+    #         integration_status=serializer.validated_data.integration_status,
+    #         integration_date=serializer.validated_data.integration_date,
+    #         error=serializer.validated_data.error
+    #     )
         
 class SubmitReportView(generics.GenericAPIView):
     serializer_class = ExpenseReportSerializer
