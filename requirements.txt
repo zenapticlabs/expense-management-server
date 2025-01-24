@@ -20,8 +20,8 @@ idna==3.10
 inflection==0.5.1
 jmespath==1.0.1
 multidict==6.1.0
-mysql-connector==2.2.9
-mysqlclient==2.2.3
+# mysql-connector==2.2.9
+# mysqlclient==2.2.3
 packaging==24.2
 phonenumbers==8.13.53
 propcache==0.2.1
