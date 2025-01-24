@@ -45,7 +45,7 @@ class ExpenseReportDetailView(generics.RetrieveUpdateDestroyAPIView):
             error=serializer.instance.error
         )
         
-class SubmitReportView(generics.UpdateAPIView):
+class SubmitReportView(generics.GenericAPIView):
     serializer_class = ExpenseReportSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'report_id'
@@ -55,7 +55,7 @@ class SubmitReportView(generics.UpdateAPIView):
             return ExpenseReport.objects.all()
         return ExpenseReport.objects.filter(user=self.request.user, report_status="Open")
 
-    def update(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.report_status = "Submitted"
         instance.report_submit_date = timezone.now()
