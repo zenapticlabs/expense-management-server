@@ -201,8 +201,9 @@ class ExpenseReportSerializer(serializers.ModelSerializer):
         return representation
 
     def create(self, validated_data):
-        if 'report_amount' not in validated_data:
-            validated_data['report_amount'] = 0.0
+        validated_data.setdefault('report_status', "Open")
+        validated_data.setdefault('integration_status', "Pending")
+        validated_data.setdefault('report_amount', 0.0)
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
