@@ -8,6 +8,7 @@ boto3==1.36.2
 botocore==1.36.2
 certifi==2024.12.14
 charset-normalizer==3.4.1
+cryptography==44.0.0
 dj-database-url==2.3.0
 Django==5.0.7
 django-cors-headers==4.6.0
@@ -26,6 +27,8 @@ packaging==24.2
 phonenumbers==8.13.53
 propcache==0.2.1
 psycopg2-binary==2.9.10
+pycryptodome==3.21.0
+pyAesCrypt==6.1.1
 PyJWT==2.10.1
 python-dateutil==2.9.0.post0
 pytz==2024.2
