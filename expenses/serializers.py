@@ -186,27 +186,15 @@ class ExpenseReportSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source='report_id', read_only=True)
     user = serializers.ReadOnlyField(source='user.id')
     report_number = serializers.ReadOnlyField()
-    report_status = serializers.ReadOnlyField()
-    report_submit_date = serializers.ReadOnlyField()
-    integration_status = serializers.ReadOnlyField()
-    integration_date = serializers.ReadOnlyField()
-    report_amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
+    report_status = serializers.CharField(default="Open")
+    integration_status = serializers.CharField(default="Pending")
+    report_amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False, default=0.0)
 
     class Meta:
         model = ExpenseReport
         fields = '__all__'
-        
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['id'] = representation.pop('report_id')
+        representation['id'] = representation.pop('report_id', None)
         return representation
-
-    def create(self, validated_data):
-        if 'report_amount' not in validated_data:
-            validated_data['report_amount'] = 0.0
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        if 'report_amount' not in validated_data:
-            validated_data['report_amount'] = instance.report_amount
-        return super().update(instance, validated_data)
