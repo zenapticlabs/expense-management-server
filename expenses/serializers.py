@@ -70,8 +70,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
     def get_presigned_url(self, obj):
         if self.context.get('include_presigned_url', False):
             if obj.s3_path:
-                bucket_name = settings.AWS_S3_BUCKET_NAME
-                return generate_presigned_url(bucket_name, obj.s3_path)
+                return generate_presigned_url(obj.s3_path)
         return None
     
     def _get_exchange_rate(self, from_currency, to_currency):
@@ -123,8 +122,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
         validated_data['s3_path'] = None
         if filename:
             object_name = f'{user_id}/{report_id}/{epoch_timestamp}_{filename}'
-            bucket_name = settings.AWS_S3_BUCKET_NAME
-            presigned_url = generate_presigned_url(bucket_name, object_name)
+            presigned_url = generate_presigned_url(object_name)
             validated_data['s3_path'] = object_name
         expense_item = super().create(validated_data)
         expense_item.presigned_url = presigned_url
@@ -145,8 +143,7 @@ class ExpenseItemSerializer(serializers.ModelSerializer):
             report_id = instance.report.report_id
             epoch_timestamp = int(time.time())
             object_name = f'{user_id}/{report_id}/{epoch_timestamp}_{filename}'
-            bucket_name = settings.AWS_S3_BUCKET_NAME
-            presigned_url = generate_presigned_url(bucket_name, object_name)
+            presigned_url = generate_presigned_url(object_name)
             instance.s3_path = object_name
             instance.presigned_url = presigned_url
 
