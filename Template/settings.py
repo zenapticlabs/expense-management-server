@@ -14,6 +14,8 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+from Template.utils import get_data_from_file
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -238,3 +240,5 @@ TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', '+15593176288')
 SUPERUSER_EMAIL='admin@pfu-us.ricoh.com'
 SUPERUSER_PASSWORD='1wpTJ^O9H0C3'
 
+AWS_ACCESS_KEY_ID = get_data_from_file("AWS_ACCESS_KEY_ID", "1")
+AWS_SECRET_ACCESS_KEY = get_data_from_file("AWS_SECRET_ACCESS_KEY", "1")

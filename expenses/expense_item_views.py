@@ -66,8 +66,7 @@ class ExpenseItemFileDownloadView(APIView):
             else:
                 expense_item = ExpenseItem.objects.get(report__report_id=report_id, item_id=item_id, report__user=request.user)
             if expense_item.s3_path:
-                bucket_name = settings.AWS_S3_BUCKET_NAME
-                presigned_url = generate_presigned_url(bucket_name, expense_item.s3_path, 'get_object')
+                presigned_url = generate_presigned_url(expense_item.s3_path, 'get_object')
                 return JsonResponse({'presigned_url': presigned_url})
             else:
                 return JsonResponse({'error': 'No file associated with this expense item'}, status=status.HTTP_404_NOT_FOUND)
