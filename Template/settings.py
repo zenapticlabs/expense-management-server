@@ -230,7 +230,7 @@ FIXTURE_DIRS = [
     os.path.join(BASE_DIR, 'fixtures')
 ]
 
-AWS_S3_BUCKET_NAME = 'pfu-expense-reciepts-test'
+# AWS_S3_BUCKET_NAME = 'pfu-expense-reciepts-test'
 
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', 'ACf7e71c4adc2b2a4a8164af9f27d11643')
 TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', 'a32280a9d57d9ea967e42e044f6f06ad')
