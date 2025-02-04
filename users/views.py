@@ -8,7 +8,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from users.models import User
-from users.utils import check_verification_code, is_phone_number_verified, send_verification_code
+from users.utils import check_verification_code, send_verification_code
 from .serializers import CreditCardSerializer, RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
