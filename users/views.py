@@ -2,14 +2,14 @@ from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from datetime import timedelta
 
 from users.models import User
 from users.utils import check_verification_code, send_verification_code
-from .serializers import CreditCardSerializer, RegisterSerializer, LoginSerializer, UserSerializer
+from .serializers import CreditCardSerializer, RegisterSerializer, LoginSerializer, ResetPasswordSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 class AddCreditCardView(generics.RetrieveUpdateDestroyAPIView):
@@ -34,7 +34,7 @@ class AddCreditCardView(generics.RetrieveUpdateDestroyAPIView):
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
     def create(self, request, *args, **kwargs):
         email = request.data.get('email')
@@ -166,3 +166,18 @@ class UserDetailView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+class ResetPasswordView(generics.UpdateAPIView):
+    serializer_class = ResetPasswordSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Password updated successfully."})
+

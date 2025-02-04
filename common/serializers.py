@@ -37,6 +37,13 @@ class HotelDailyBaseRateSerializer(serializers.ModelSerializer):
     class Meta:
         model = HotelDailyBaseRate
         fields = "__all__"
+        
+    def save(self, *args, **kwargs):
+        if self.currency:
+            self.currency = self.currency.upper()
+
+        super().save(*args, **kwargs)
+
 
 class MileageRateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,3 +54,10 @@ class ExchangeRateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExchangeRate
         fields = ['id', 'target_currency', 'rate', 'date_fetched']
+        
+    def save(self, *args, **kwargs):
+        if self.target_currency:
+            self.target_currency = self.target_currency.upper()
+
+        super().save(*args, **kwargs)
+

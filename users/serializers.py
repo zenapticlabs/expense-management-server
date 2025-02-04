@@ -53,3 +53,21 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'email', 'first_name', 'last_name', 'currency', 'department', 'cc_card', 'created_at', 'updated_at']
         read_only_fields = ['email', 'phone_number', 'created_at', 'updated_at']
+        
+class ResetPasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = self.context['request'].user
+
+        if not user.check_password(data['current_password']):
+            raise serializers.ValidationError({"current_password": "Incorrect current password."})
+
+        return data
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+

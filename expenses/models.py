@@ -2,23 +2,36 @@
 
 import uuid
 from django.db import models
+from Template.models import UppercaseCharField
 from users.models import User
 from common.models import Airline, RentalAgency, CarType, MealCategory, RelationshipToPAI, City, HotelDailyBaseRate, MileageRate
 
 class ExpenseReport(models.Model):
+    class ReportStatus(models.TextChoices):
+        OPEN = "Open", "Open"
+        SUBMITTED = "Submitted", "Submitted"
+        APPROVED = "Approved", "Approved"
+        REJECTED = "Rejected", "Rejected"
+        PAID = "Paid", "Paid"
+
+    class IntegrationStatus(models.TextChoices):
+        PENDING = "Pending", "Pending"
+        SUCCESS = "Success", "Success"
+        FAILURE = "Failure", "Failure"
+
     id = models.AutoField(primary_key=True)
     report_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     report_number = models.CharField(max_length=20)
-    report_status = models.CharField(max_length=100)
+    report_status = models.CharField(max_length=20, choices=ReportStatus.choices, default=ReportStatus.OPEN)
     report_date = models.DateField(null=True)
     expense_type = models.CharField(max_length=100)
     purpose = models.CharField(max_length=1000)
     payment_method = models.CharField(max_length=100)
     report_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    report_currency = models.CharField(max_length=5)
+    report_currency = UppercaseCharField(max_length=5)
     report_submit_date = models.DateField(null=True)
-    integration_status = models.CharField(max_length=100)
+    integration_status = models.CharField(max_length=10, choices=IntegrationStatus.choices, default=IntegrationStatus.PENDING)
     integration_date = models.DateField(null=True)
     error = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -36,6 +49,17 @@ class ExpenseReport(models.Model):
                 self.report_number = f'{last_report_number + 1:04d}'
             else:
                 self.report_number = '1000'
+        if self.report_currency:
+            self.report_currency = self.report_currency.upper()
+        
+        request = kwargs.pop("request", None)
+
+        if not self.pk and request and hasattr(request, "user"):
+            self.created_by = request.user
+
+        if self.pk and request and hasattr(request, "user"):
+            self.updated_by = request.user
+
         super().save(*args, **kwargs)
 
 class ExpenseItem(models.Model):
@@ -45,7 +69,7 @@ class ExpenseItem(models.Model):
     expense_type = models.CharField(max_length=50)
     expense_date = models.DateField(null=True)
     receipt_amount = models.CharField(max_length=200)
-    receipt_currency = models.CharField(max_length=200)
+    receipt_currency = UppercaseCharField(max_length=5)
     justification = models.CharField(max_length=2000)
     note = models.CharField(max_length=2000, null=True)
     s3_path = models.CharField(max_length=255, null=True, blank=True)
@@ -75,3 +99,17 @@ class ExpenseItem(models.Model):
     class Meta:
         managed = True
         db_table = 'expense_item'
+        
+    def save(self, *args, **kwargs):
+        if self.receipt_currency:
+            self.receipt_currency = self.receipt_currency.upper()
+        
+        request = kwargs.pop("request", None)
+
+        if not self.pk and request and hasattr(request, "user"):
+            self.created_by = request.user
+
+        if self.pk and request and hasattr(request, "user"):
+            self.updated_by = request.user
+
+        super().save(*args, **kwargs)
