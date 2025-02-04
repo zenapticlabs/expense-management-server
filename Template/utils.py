@@ -43,7 +43,7 @@ def get_data_from_file(setting, data_num):
         if value is not None:
             return value
         else:
-            raise None
+            return None
 
 
 def sign(params):

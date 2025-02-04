@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
+from Template.models import UppercaseCharField
+
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -39,7 +41,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     phone_number = PhoneNumberField(unique=True)
-    currency = models.CharField(max_length=10, default="USD")
+    currency = UppercaseCharField(max_length=5, default="USD")
     department = models.CharField(max_length=50, null=True, blank=True, default=None)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -55,3 +57,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def save(self, *args, **kwargs):
+        if self.currency:
+            self.currency = self.currency.upper()
+
+        super().save(*args, **kwargs)
+
