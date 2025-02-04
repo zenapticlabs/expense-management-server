@@ -12,20 +12,24 @@ from users.utils import check_verification_code, send_verification_code
 from .serializers import CreditCardSerializer, RegisterSerializer, LoginSerializer, UserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
-class AddCreditCardView(generics.CreateAPIView):
+class AddCreditCardView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CreditCardSerializer
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
+    def get_object(self):
+        return self.request.user.cc_card
+
+    def post(self, request, *args, **kwargs):
+        if request.user.cc_card:
+            return Response({'detail': 'User already has a credit card'}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         credit_card = serializer.save()
         request.user.cc_card = credit_card
         request.user.save()
-        return Response({
-            'detail': 'Credit card added successfully',
-            'credit_card': CreditCardSerializer(credit_card).data
-        }, status=status.HTTP_201_CREATED)
+
+        return Response({'detail': 'Credit card added successfully', 'credit_card': serializer.data}, status=status.HTTP_201_CREATED)
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
