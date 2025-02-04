@@ -29,7 +29,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"card_number\": \"<string>\",\n  \"expiration_date\": \"<date>\"\n}",
+									"raw": "{\n  \"card_number\": \"12345\",\n  \"expiration_date\": \"2028-12-01\"\n}",
 									"options": {
 										"raw": {
 											"headerFamily": "json",
@@ -38,14 +38,195 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/auth/credit-card/",
+									"raw": "{{baseUrl}}/auth/credit-card",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"auth",
-										"credit-card",
-										""
+										"credit-card"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Untitled Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Basic <credentials>",
+												"description": "Added as a part of security scheme: basic"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"card_number\": \"<string>\",\n  \"expiration_date\": \"<date>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/credit-card/",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"credit-card",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"card_number\": \"<string>\",\n  \"expiration_date\": \"<date>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "auth credit-card delete",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"card_number\": \"12345\",\n  \"expiration_date\": \"2028-12-01\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/credit-card",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"credit-card"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Untitled Response",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Basic <credentials>",
+												"description": "Added as a part of security scheme: basic"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"card_number\": \"<string>\",\n  \"expiration_date\": \"<date>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/credit-card/",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"credit-card",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"card_number\": \"<string>\",\n  \"expiration_date\": \"<date>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "auth credit-card patch",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"card_number\": \"4111111111111111\",\n  \"expiration_date\": \"2028-12-01\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/credit-card",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"credit-card"
 									]
 								}
 							},
@@ -253,14 +434,13 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/auth/me/",
+									"raw": "{{baseUrl}}/auth/me",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"auth",
-										"me",
-										""
+										"me"
 									]
 								}
 							},
@@ -517,12 +697,26 @@
 					"item": [
 						{
 							"name": "auth verify-mfa create",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"pm.environment.set(\"accessToken\", responseJson.access);\r",
+											"pm.environment.set(\"refreshToken\", responseJson.refresh);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"email\": \"test@test.com\",\r\n    \"code\": \"12345\"\r\n}",
+									"raw": "{\r\n    \"email\": \"hello@hello.com\",\r\n    \"code\": \"12345\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -637,6 +831,43 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"current_password\": \"securepassword1\",\r\n    \"new_password\": \"securepassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1373,31 +1604,29 @@
 												{
 													"name": "reports items download-receipt list",
 													"request": {
+														"auth": {
+															"type": "bearer",
+															"bearer": [
+																{
+																	"key": "token",
+																	"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDk2ODg4LCJpYXQiOjE3MzgwOTMyODgsImp0aSI6IjVmNDZlZjY0MjE3YTQ5MDU4MGE0NTk2ZDQ1YWQ2MTQ3IiwidXNlcl9pZCI6IjYyMmFhMzVjLTM2Y2MtNDU0Mi04ZjdlLTk1YmZhM2M4MWU2YSJ9.JluZgVmu7JvOMuntITztCZDo7pHCCbXJ8OMCjQzWU74",
+																	"type": "string"
+																}
+															]
+														},
 														"method": "GET",
 														"header": [],
 														"url": {
-															"raw": "{{baseUrl}}/reports/:report_id/items/:item_id/download-receipt",
+															"raw": "{{baseUrl}}/reports/2919671c-9810-4115-a689-09a9deeeb10d/items/7aaf2530-c49c-4f78-9d3b-01f31d554538/download-receipt",
 															"host": [
 																"{{baseUrl}}"
 															],
 															"path": [
 																"reports",
-																":report_id",
+																"2919671c-9810-4115-a689-09a9deeeb10d",
 																"items",
-																":item_id",
+																"7aaf2530-c49c-4f78-9d3b-01f31d554538",
 																"download-receipt"
-															],
-															"variable": [
-																{
-																	"key": "report_id",
-																	"value": "<string>",
-																	"description": "(Required) "
-																},
-																{
-																	"key": "item_id",
-																	"value": "<string>",
-																	"description": "(Required) "
-																}
 															]
 														}
 													},
@@ -1919,6 +2148,16 @@
 								{
 									"name": "reports items create",
 									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM4MDk2ODg4LCJpYXQiOjE3MzgwOTMyODgsImp0aSI6IjVmNDZlZjY0MjE3YTQ5MDU4MGE0NTk2ZDQ1YWQ2MTQ3IiwidXNlcl9pZCI6IjYyMmFhMzVjLTM2Y2MtNDU0Mi04ZjdlLTk1YmZhM2M4MWU2YSJ9.JluZgVmu7JvOMuntITztCZDo7pHCCbXJ8OMCjQzWU74",
+													"type": "string"
+												}
+											]
+										},
 										"method": "POST",
 										"header": [
 											{
@@ -1932,7 +2171,7 @@
 										],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n  \"expense_type\": \"<string>\",\n  \"receipt_amount\": \"<string>\",\n  \"receipt_currency\": \"<string>\",\n  \"justification\": \"<string>\",\n  \"note\": \"<string>\",\n  \"airline\": \"<string>\",\n  \"rental_agency\": \"<string>\",\n  \"car_type\": \"<string>\",\n  \"meal_category\": \"<string>\",\n  \"relationship_to_pai\": \"<string>\",\n  \"city\": \"<string>\",\n  \"hotel_daily_base_rate\": \"<integer>\",\n  \"mileage_rate\": \"<integer>\",\n  \"filename\": \"<string>\",\n  \"expense_date\": \"<date>\",\n  \"s3_path\": \"<string>\",\n  \"origin_destination\": \"<string>\",\n  \"employee_names\": \"<string>\",\n  \"total_employees\": \"<integer>\",\n  \"company_customer_name\": \"<string>\",\n  \"business_topic\": \"<string>\",\n  \"total_attendees\": \"<integer>\",\n  \"name_of_establishment\": \"<string>\",\n  \"hotel_name\": \"<string>\",\n  \"carrier\": \"<string>\",\n  \"distance\": \"<string>\",\n  \"report\": \"<integer>\"\n}",
+											"raw": "{\n  \"expense_type\": \"Airfare\",\n  \"receipt_amount\": 200.00,\n  \"receipt_currency\": \"USD\",\n  \"airline\": \"American Airlines\",\n  \"filename\": \"12345.png\",\n  \"expense_date\": \"2025-01-28\",\n  \"origin_destination\": \"Chicago_San Francisco\"\n}",
 											"options": {
 												"raw": {
 													"headerFamily": "json",
@@ -1941,21 +2180,14 @@
 											}
 										},
 										"url": {
-											"raw": "{{baseUrl}}/reports/:report_id/items",
+											"raw": "{{baseUrl}}/reports/2919671c-9810-4115-a689-09a9deeeb10d/items",
 											"host": [
 												"{{baseUrl}}"
 											],
 											"path": [
 												"reports",
-												":report_id",
+												"2919671c-9810-4115-a689-09a9deeeb10d",
 												"items"
-											],
-											"variable": [
-												{
-													"key": "report_id",
-													"value": "<string>",
-													"description": "(Required) "
-												}
 											]
 										}
 									},
@@ -2020,6 +2252,61 @@
 											"body": "{\n  \"expense_type\": \"<string>\",\n  \"receipt_amount\": \"<string>\",\n  \"receipt_currency\": \"<string>\",\n  \"id\": \"<uuid>\",\n  \"justification\": \"<string>\",\n  \"note\": \"<string>\",\n  \"airline\": \"<string>\",\n  \"rental_agency\": \"<string>\",\n  \"car_type\": \"<string>\",\n  \"meal_category\": \"<string>\",\n  \"relationship_to_pai\": \"<string>\",\n  \"city\": \"<string>\",\n  \"hotel_daily_base_rate\": \"<integer>\",\n  \"mileage_rate\": \"<integer>\",\n  \"presigned_url\": \"<string>\",\n  \"filename\": \"<string>\",\n  \"item_id\": \"<uuid>\",\n  \"expense_date\": \"<date>\",\n  \"s3_path\": \"<string>\",\n  \"origin_destination\": \"<string>\",\n  \"employee_names\": \"<string>\",\n  \"total_employees\": \"<integer>\",\n  \"company_customer_name\": \"<string>\",\n  \"business_topic\": \"<string>\",\n  \"total_attendees\": \"<integer>\",\n  \"name_of_establishment\": \"<string>\",\n  \"hotel_name\": \"<string>\",\n  \"carrier\": \"<string>\",\n  \"distance\": \"<string>\",\n  \"created_at\": \"<dateTime>\",\n  \"updated_at\": \"<dateTime>\",\n  \"report\": \"<integer>\"\n}"
 										}
 									]
+								},
+								{
+									"name": "PUT object in S3",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "file",
+											"file": {
+												"src": "/Users/sung-hyunkang/Documents/DB_schema.png"
+											}
+										},
+										"url": {
+											"raw": "https://pfu-expense-reciepts-test.s3.amazonaws.com/622aa35c-36cc-4542-8f7e-95bfa3c81e6a/2919671c-9810-4115-a689-09a9deeeb10d/1738093774_12345.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIATMRWS2IXRGGLBZ72%2F20250128%2Fus-west-1%2Fs3%2Faws4_request&X-Amz-Date=20250128T194934Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=00b57cc8719742c5c585f35b124b12e00324a549748eef8041d88d5649fe00c1",
+											"protocol": "https",
+											"host": [
+												"pfu-expense-reciepts-test",
+												"s3",
+												"amazonaws",
+												"com"
+											],
+											"path": [
+												"622aa35c-36cc-4542-8f7e-95bfa3c81e6a",
+												"2919671c-9810-4115-a689-09a9deeeb10d",
+												"1738093774_12345.png"
+											],
+											"query": [
+												{
+													"key": "X-Amz-Algorithm",
+													"value": "AWS4-HMAC-SHA256"
+												},
+												{
+													"key": "X-Amz-Credential",
+													"value": "AKIATMRWS2IXRGGLBZ72%2F20250128%2Fus-west-1%2Fs3%2Faws4_request"
+												},
+												{
+													"key": "X-Amz-Date",
+													"value": "20250128T194934Z"
+												},
+												{
+													"key": "X-Amz-Expires",
+													"value": "300"
+												},
+												{
+													"key": "X-Amz-SignedHeaders",
+													"value": "host"
+												},
+												{
+													"key": "X-Amz-Signature",
+													"value": "00b57cc8719742c5c585f35b124b12e00324a549748eef8041d88d5649fe00c1"
+												}
+											]
+										}
+									},
+									"response": []
 								}
 							]
 						},
@@ -2738,24 +3025,41 @@
 		}
 	],
 	"auth": {
-		"type": "basic",
-		"basic": [
+		"type": "bearer",
+		"bearer": [
 			{
-				"key": "username",
-				"value": "{{basicAuthUsername}}",
-				"type": "string"
-			},
-			{
-				"key": "password",
-				"value": "{{basicAuthPassword}}",
+				"key": "token",
+				"value": "{{accessToken}}",
 				"type": "string"
 			}
 		]
 	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "https://expense-management-server.vercel.app/api"
+			"value": "http://localhost:8000/api"
 		}
 	]
 }
