@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -51,12 +52,12 @@ class RegisterView(generics.CreateAPIView):
         user = serializer.save()
         user.is_active = False
         
-        if is_phone_number_verified(user.phone_number.as_e164):
+        if settings.DISABLE_MFA:
+            user.is_active = True
+            response = {'detail': 'User Created'}
+        else:
             send_verification_code(user.phone_number.as_e164)
             response = {'detail': 'Two-factor authentication required'}
-        else:
-            user.is_active = True
-            response = {'detail': 'Phone number not verified. Please verify your phone number with Twilio.'}
         user.save()
 
         return Response(response, status=status.HTTP_201_CREATED)
@@ -154,7 +155,7 @@ class LogoutView(APIView):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
-class UserDetailView(generics.RetrieveAPIView):
+class UserDetailView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]

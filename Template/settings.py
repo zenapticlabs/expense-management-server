@@ -243,4 +243,4 @@ SUPERUSER_PASSWORD='1wpTJ^O9H0C3'
 AWS_ACCESS_KEY_ID = get_data_from_file("AWS_ACCESS_KEY_ID", "1")
 AWS_SECRET_ACCESS_KEY = get_data_from_file("AWS_SECRET_ACCESS_KEY", "1")
 AWS_DEFAULT_REGION = os.environ.get("AWS_REGION", "us-east-1")
-DISABLE_MFA = os.environ.get("VERCEL", "False") == "True"
+DISABLE_MFA = os.environ.get("VERCEL", "False") == "True" or get_data_from_file("STAGE", "1") == "TEST"

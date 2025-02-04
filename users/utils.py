@@ -4,15 +4,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def is_phone_number_verified(phone_number):
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-    incoming_phone_numbers = client.outgoing_caller_ids.list()
+# def is_phone_number_verified(phone_number):
+#     client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+#     incoming_phone_numbers = client.outgoing_caller_ids.list()
 
-    for number in incoming_phone_numbers:
-        print(number.phone_number)
-        if number.phone_number == phone_number:
-            return True
-    return False
+#     for number in incoming_phone_numbers:
+#         if number.phone_number == phone_number:
+#             return True
+#     return False
 
 def send_verification_code(phone_number, channel='sms'):
     try:
