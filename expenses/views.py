@@ -59,7 +59,7 @@ class SubmitReportView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.report_status = "Submitted"
-        instance.report_submit_date = timezone.now()
+        instance.report_submit_date = timezone.now().date()
         instance.save()
 
         serializer = self.get_serializer(instance)
