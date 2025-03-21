@@ -37,23 +37,31 @@ class CreditCard(models.Model):
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user_id = models.BigIntegerField(null=True, blank=True)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    phone_number = PhoneNumberField(unique=True)
+    department_code = models.CharField(max_length=10, null=True, blank=True)
+    employee_id = models.CharField(max_length=20, null=True, blank=True)
     currency = UppercaseCharField(max_length=5, default="USD")
-    department = models.CharField(max_length=50, null=True, blank=True, default=None)
-    is_active = models.BooleanField(default=True)
+    em_cc_card_id = models.CharField(max_length=80, null=True, blank=True)
+    company_code = models.CharField(max_length=10, null=True, blank=True)
+    set_of_books_id = models.IntegerField(null=True, blank=True)
+    org_id = models.IntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    cc_card = models.ForeignKey(CreditCard, null=True, blank=True, on_delete=models.SET_NULL)
-    last_2fa_time = models.DateTimeField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    error_status = models.CharField(max_length=200, null=True, blank=True)
+    integration_status = models.CharField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number', 'currency']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'currency']
+
+    class Meta:
+        unique_together = ['user_id', 'email']
 
     def __str__(self):
         return self.email

@@ -81,23 +81,6 @@ class ExchangeRateListView(generics.ListAPIView):
         return Response(conversion_rates, status=status.HTTP_200_OK)
 
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        report = instance.report
-
-        old_receipt_amount = Decimal(instance.receipt_amount)
-        old_receipt_currency = instance.receipt_currency
-
-        old_rate = self.get_exchange_rate(old_receipt_currency, report.report_currency)
-        old_converted_amount = old_receipt_amount * old_rate
-        report.report_amount -= old_converted_amount
-        report.save()
-
-        self.perform_destroy(instance)
-
-        return Response({"result": "success", "message": "Expense item deleted and report updated."}, status=status.HTTP_204_NO_CONTENT)
-
-
     def update_exchange_rates(self):
         """Fetch latest exchange rates and update the database."""
         try:

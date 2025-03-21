@@ -51,8 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id', 'email', 'first_name', 'last_name', 'currency', 'department', 'cc_card', 'created_at', 'updated_at']
-        read_only_fields = ['email', 'phone_number', 'created_at', 'updated_at']
+        fields = "__all__"
         
 class ResetPasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(write_only=True)
@@ -71,3 +70,5 @@ class ResetPasswordSerializer(serializers.Serializer):
         user.set_password(self.validated_data['new_password'])
         user.save()
 
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    new_password = serializers.CharField(write_only=True)

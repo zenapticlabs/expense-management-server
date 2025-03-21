@@ -13,8 +13,11 @@ class ExpenseReportListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_staff or self.request.user.is_superuser:
-            return ExpenseReport.objects.all()
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            if hasattr(user, "org_id") and user.org_id:
+                return ExpenseReport.objects.filter(user__org_id=user.org_id)
+            return ExpenseReport.objects.none()
         return ExpenseReport.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
@@ -54,11 +57,12 @@ class SubmitReportView(generics.GenericAPIView):
     def get_queryset(self):
         if self.request.user.is_staff or self.request.user.is_superuser:
             return ExpenseReport.objects.all()
-        return ExpenseReport.objects.filter(user=self.request.user, report_status="Open")
+        return ExpenseReport.objects.filter(user=self.request.user)
 
     def post(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.report_status = "Submitted"
+        instance.integration_status = "Pending"
         instance.report_submit_date = timezone.now().date()
         instance.save()
 

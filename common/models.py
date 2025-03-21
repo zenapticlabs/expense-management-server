@@ -60,6 +60,7 @@ class City(models.Model):
         return self.value
 
 class HotelDailyBaseRate(models.Model):
+    value = models.CharField(max_length=100, null=True, blank=True)
     country = models.CharField(max_length=200)
     city = models.CharField(max_length=200)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -73,13 +74,13 @@ class HotelDailyBaseRate(models.Model):
 
 class MileageRate(models.Model):
     rate = models.DecimalField(max_digits=3, decimal_places=2, unique=True)
-    title = models.CharField(max_length=3)
+    value = models.CharField(max_length=3, null=True, blank=True)
 
     class Meta:
         db_table = 'mileage_rate'
 
     def __str__(self):
-        return f'{self.rate} {self.title}'
+        return f'{self.rate} {self.value}'
     
 class ExchangeRate(models.Model):
     target_currency = UppercaseCharField(max_length=5)
