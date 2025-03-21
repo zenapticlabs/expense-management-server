@@ -243,7 +243,7 @@ FIXTURE_DIRS = [
 ]
 
 
-AWS_S3_BUCKET_NAME = 'pfu-expense-reciepts-test'
+AWS_S3_BUCKET_NAME = get_data_from_file("AWS_S3_BUCKET_NAME", "1")
 
 SUPERUSER_EMAIL = get_data_from_file("SUPERUSER_EMAIL", "1")
 SUPERUSER_PASSWORD = get_data_from_file("SUPERUSER_PASSWORD", "1")
