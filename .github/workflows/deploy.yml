@@ -19,6 +19,9 @@ jobs:
         with:
           secrets: ${{ secrets.ALL_SECRETS || toJSON(secrets) }}
 
+      - name: Debug Environment Variables
+        run: env | sort
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
