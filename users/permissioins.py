@@ -43,7 +43,7 @@ class PasswordResetRequestAuthentication(BaseAuthentication):
         token = auth_header.split(" ")[1]
 
         try:
-            decoded_token = jwt.decode(token, settings.SECRET_KEY)
+            decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed("Token has expired.")
         except jwt.InvalidTokenError:
