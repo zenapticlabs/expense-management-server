@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from pathlib import Path
 from datetime import timedelta
 import os
 
@@ -39,6 +38,9 @@ ACCOUNT_EMAIL_REQUIRED = False
 APPEND_SLASH=False
 
 AUTH_USER_MODEL = "users.User"
+
+FRONTEND_URL = get_data_from_file("FRONTEND_URL", "1")
+DEFAULT_FROM_EMAIL = get_data_from_file("DEFAULT_FROM_EMAIL", "1")
 
 LOGGING = {
     'version': 1,
@@ -161,6 +163,12 @@ WSGI_APPLICATION = 'Template.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+DB_NAME = get_data_from_file("DB_NAME", "1")
+DB_USER = get_data_from_file("DB_USER", "1")
+DB_PASSWORD = get_data_from_file("DB_PASSWORD", "1")
+DB_HOST = get_data_from_file("DB_HOST", "1")
+DB_PORT = get_data_from_file("DB_PORT", "1")
+
 if os.environ.get('VERCEL', 'False') == 'True':
     import dj_database_url
     DATABASES = {
@@ -172,14 +180,18 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'pfu_expense',
-            'USER': 'root',
-            'PASSWORD': 'password',
-            'HOST': 'localhost',
-            'PORT': '3306',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT
         }
     }
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+SENDGRID_API_KEY = get_data_from_file("SENDGRID_API_KEY", "1")
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
+SENDGRID_ECHO_TO_STDOUT = True
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -230,17 +242,12 @@ FIXTURE_DIRS = [
     os.path.join(BASE_DIR, 'fixtures')
 ]
 
-# AWS_S3_BUCKET_NAME = 'pfu-expense-reciepts-test'
 
-TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', 'ACf7e71c4adc2b2a4a8164af9f27d11643')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', 'a32280a9d57d9ea967e42e044f6f06ad')
-TWILIO_VERIFY_SERVICE_SID = os.getenv('TWILIO_VERIFY_SERVICE_SID', 'VAfdb5283adbf118cb756ddfa7901855af')
-TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', '+15593176288')
+AWS_S3_BUCKET_NAME = 'pfu-expense-reciepts-test'
 
-SUPERUSER_EMAIL='admin@pfu-us.ricoh.com'
-SUPERUSER_PASSWORD='1wpTJ^O9H0C3'
+SUPERUSER_EMAIL = get_data_from_file("SUPERUSER_EMAIL", "1")
+SUPERUSER_PASSWORD = get_data_from_file("SUPERUSER_PASSWORD", "1")
 
 AWS_ACCESS_KEY_ID = get_data_from_file("AWS_ACCESS_KEY_ID", "1")
 AWS_SECRET_ACCESS_KEY = get_data_from_file("AWS_SECRET_ACCESS_KEY", "1")
-AWS_DEFAULT_REGION = os.environ.get("AWS_REGION", "us-east-1")
-DISABLE_MFA = os.environ.get("VERCEL", "False") == "True" or get_data_from_file("STAGE", "1") == "TEST"
+AWS_DEFAULT_REGION = get_data_from_file("AWS_DEFAULT_REGION", "1")

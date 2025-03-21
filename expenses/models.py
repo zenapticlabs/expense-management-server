@@ -1,10 +1,11 @@
 # expenses/models.py
 
+from decimal import Decimal
 import uuid
 from django.db import models
 from Template.models import UppercaseCharField
 from users.models import User
-from common.models import Airline, RentalAgency, CarType, MealCategory, RelationshipToPAI, City, HotelDailyBaseRate, MileageRate
+from common.models import Airline, ExchangeRate, RentalAgency, CarType, MealCategory, RelationshipToPAI, City, HotelDailyBaseRate, MileageRate
 
 class ExpenseReport(models.Model):
     class ReportStatus(models.TextChoices):
@@ -34,6 +35,9 @@ class ExpenseReport(models.Model):
     integration_status = models.CharField(max_length=10, choices=IntegrationStatus.choices, default=IntegrationStatus.PENDING)
     integration_date = models.DateField(null=True)
     error = models.BooleanField(default=True)
+    iexp_report_status = models.CharField(max_length=100, null=True, blank=True)
+    iexp_report_number = models.CharField(max_length=100, null=True, blank=True)
+    paid_amount = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -68,11 +72,12 @@ class ExpenseItem(models.Model):
     report = models.ForeignKey(ExpenseReport, null=True, on_delete=models.CASCADE)
     expense_type = models.CharField(max_length=50)
     expense_date = models.DateField(null=True)
+    exchange_rate = models.DecimalField(max_digits=20, decimal_places=6, null=True)
+    payment_method = models.CharField(max_length=100, default="Cash")
     receipt_amount = models.CharField(max_length=200)
     receipt_currency = UppercaseCharField(max_length=5)
     justification = models.CharField(max_length=2000)
     note = models.CharField(max_length=2000, null=True)
-    s3_path = models.CharField(max_length=255, null=True, blank=True)
 
     airline = models.ForeignKey(Airline, null=True, on_delete=models.SET_NULL)
     origin_destination = models.CharField(max_length=200, null=True)
@@ -81,9 +86,20 @@ class ExpenseItem(models.Model):
     meal_category = models.ForeignKey(MealCategory, null=True, on_delete=models.SET_NULL)
     employee_names = models.CharField(max_length=2000, null=True)
     total_employees = models.IntegerField(null=True)
-    company_customer_name = models.CharField(max_length=2000, null=True)
+    employee_names2 = models.CharField(max_length=200, null=True, blank=True, default="N/A")
+    company_customer_name_title = models.CharField(max_length=2000, null=True)
     business_topic = models.CharField(max_length=200, null=True)
     total_attendees = models.IntegerField(null=True)
+    attendee1 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee2 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee3 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee4 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee5 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee6 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee7 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee8 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee9 = models.CharField(max_length=200, null=True, default="N/A")
+    attendee10 = models.CharField(max_length=200, null=True, default="N/A")
     relationship_to_pai = models.ForeignKey(RelationshipToPAI, null=True, on_delete=models.SET_NULL)
     name_of_establishment = models.CharField(max_length=200, null=True)
     city = models.ForeignKey(City, null=True, on_delete=models.SET_NULL)
@@ -106,6 +122,14 @@ class ExpenseItem(models.Model):
         
         request = kwargs.pop("request", None)
 
+        user = getattr(request, "user", None) if request else None
+        user_default_currency = getattr(user, "currency", None) if user else None
+        if user_default_currency:
+            user_default_currency = user_default_currency.upper()
+
+        if self.receipt_currency and user_default_currency and self.receipt_currency != user_default_currency:
+            self.exchange_rate = self.get_exchange_rate(self.receipt_currency, user_default_currency)
+
         if not self.pk and request and hasattr(request, "user"):
             self.created_by = request.user
 
@@ -113,3 +137,29 @@ class ExpenseItem(models.Model):
             self.updated_by = request.user
 
         super().save(*args, **kwargs)
+
+    def get_exchange_rate(self, from_currency, to_currency):
+        if from_currency == to_currency:
+            return Decimal(1)
+        try:
+            latest_rate = ExchangeRate.objects.latest('date_fetched')
+            from_rate = ExchangeRate.objects.get(target_currency=from_currency, date_fetched=latest_rate.date_fetched).rate
+            to_rate = ExchangeRate.objects.get(target_currency=to_currency, date_fetched=latest_rate.date_fetched).rate
+            return to_rate / from_rate
+        except ExchangeRate.DoesNotExist:
+            return None
+        
+
+class ExpenseReceipt(models.Model):
+    id = models.AutoField(primary_key=True)
+    expense_item = models.ForeignKey(ExpenseItem, related_name="receipts", on_delete=models.CASCADE)
+    s3_path = models.CharField(max_length=2000, null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'expense_receipt'
+
+    def __str__(self):
+        return f"Receipt {self.id} for ExpenseItem {self.expense_item.id} - {self.receipt_amount} {self.receipt_currency}"
+
+

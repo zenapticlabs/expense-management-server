@@ -29,6 +29,8 @@ def get_s3_client():
 
 
 def generate_presigned_url(object_name, operation="put_object", expiration=300):
+    print("===============================================")
+    print(operation)
     s3_client = get_s3_client()
     try:
         response = s3_client.generate_presigned_url(
