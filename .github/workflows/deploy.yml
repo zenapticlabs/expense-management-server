@@ -33,17 +33,25 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run migrations
+        env:
+          VERCEL: "True"
         run: |
           python manage.py migrate
 
       - name: Load Fixture Data and Create Superuser
+        env:
+          VERCEL: "True"
         run: |
           python manage.py check_and_load_fixture fixtures/initial_data.json
 
       - name: Collect static files
+        env:
+          VERCEL: "True"
         run: python manage.py collectstatic --noinput
 
       - name: Deploy to Vercel
+        env:
+          VERCEL: "True"
         run: |
           npm install -g vercel
           vercel --token $VERCEL_TOKEN --prod --confirm
