@@ -38,6 +38,7 @@ urlpatterns = [
         path('', include('expenses.urls')),
         path('auth/', include('users.urls')),
         path('common/', include('common.urls')),
+        path('ocr/', include('ocr_scanner.urls')),
     ])),
     path('swagger.json', schema_view.without_ui(cache_timeout=0), name='schema-json'),
 ]

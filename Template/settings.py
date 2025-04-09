@@ -169,7 +169,7 @@ DB_PASSWORD = get_data_from_file("DB_PASSWORD", "1")
 DB_HOST = get_data_from_file("DB_HOST", "1")
 DB_PORT = get_data_from_file("DB_PORT", "1")
 
-if os.environ.get('VERCEL', 'False') == 'True':
+if os.environ.get('VERCEL', 'True') == 'True':
     import dj_database_url
     DATABASES = {
         'default': dj_database_url.config(
