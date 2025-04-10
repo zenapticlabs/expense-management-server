@@ -1,5 +1,7 @@
 from pathlib import Path
 import re
+from typing import List
+import fitz
 from langchain_openai import ChatOpenAI
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
@@ -23,10 +25,15 @@ def match_or_none(model, field_value, field_name="name"):
 def encode_image_to_base64(image_path: str) -> str:
     """Encode an image to base64 format with data URI prefix."""
     ext = Path(image_path).suffix.lower().replace('.', '')
-    mime_type = f"image/{'jpeg' if ext in ['jpg', 'jpeg'] else ext}"  # Dynamic MIME type based on file extension
+    mime_type = f"image/{'jpeg' if ext in ['jpg', 'jpeg'] else ext}"
     with open(image_path, "rb") as f:
         base64_str = base64.b64encode(f.read()).decode("utf-8")
     return base64_str, mime_type
+
+
+def encode_image_bytes_to_base64(png_bytes: bytes) -> str:
+    """Encode PNG bytes to base64 string with data URI."""
+    return base64.b64encode(png_bytes).decode("utf-8")
 
 
 def create_ocr_prompt(base64_image: str, mime_type: str):
@@ -93,26 +100,68 @@ def clean_and_parse_json(raw_output: str) -> dict:
         return {"error": "Failed to parse structured info as JSON."}
     
 
-def process_receipt(image_path: str) -> dict:
-    """process a receipt image and return structured data."""
-    base64_image, mime_type = encode_image_to_base64(image_path)
-    prompt = create_ocr_prompt(base64_image, mime_type)
+
+def pdf_to_png_bytes(pdf_bytes: bytes, zoom: float = 2.0) -> List[bytes]:
+    """Convert PDF bytes to list of PNG bytes (1 per page)."""
+    png_bytes_list = []
+    with fitz.open(stream=pdf_bytes, filetype="pdf") as pdf:
+        for page_number in range(len(pdf)):
+            page = pdf.load_page(page_number)
+            mat = fitz.Matrix(zoom, zoom)
+            pix = page.get_pixmap(matrix=mat)
+            png_bytes = pix.tobytes("png")
+            png_bytes_list.append(png_bytes)
+    return png_bytes_list
+
+
+def process_pdf_bytes(pdf_bytes: bytes) -> dict:
+    """Main OCR processing from PDF bytes."""
+    png_pages = pdf_to_png_bytes(pdf_bytes)
+    if not png_pages:
+        return {"error": "PDF contains no pages or failed to render."}
+
+    # Use first page only (you can iterate over multiple pages if needed)
+    base64_image = encode_image_bytes_to_base64(png_pages[0])
+    prompt = create_ocr_prompt(base64_image)
 
     chain = LLMChain(llm=vision_llm, prompt=prompt)
 
     try:
         structured_info_raw = chain.run({})
+        extracted_info = clean_and_parse_json(structured_info_raw)
+        return {"extracted_info": extracted_info}
     except Exception as e:
-        return {"error": f"Failed to run GPT Vision chain: {e}"}
+        return {"error": f"LLM processing failed: {e}"}
+    
 
+def process_receipt(file_path: str) -> dict:
+    """Process a receipt (PDF or image) and return structured structured data."""
+    suffix = Path(file_path).suffix.lower()
+    
     try:
-        # extracted_info = json.loads(structured_info_raw)
+        if suffix == ".pdf":
+            # Convert PDF to PNG bytes
+            with open(file_path, "rb") as f:
+                pdf_bytes = f.read()
+            png_pages = pdf_to_png_bytes(pdf_bytes)
+            if not png_pages:
+                return {"error": "PDF contains no pages or failed to render."}
+            base64_image = encode_image_bytes_to_base64(png_pages[0])
+            mime_type = "image/png"
+        else:
+            # Handle image normally
+            base64_image, mime_type = encode_image_to_base64(file_path)
+
+        # Create and run LLM chain
+        prompt = create_ocr_prompt(base64_image, mime_type)
+        chain = LLMChain(llm=vision_llm, prompt=prompt)
+        structured_info_raw = chain.run({})
         extracted_info = clean_and_parse_json(structured_info_raw)
 
-    except json.JSONDecodeError:
-        print("Raw model output:\n", structured_info_raw)
-        return {"error": "Failed to parse structured info as JSON."}
+    except Exception as e:
+        return {"error": f"Failed to process file: {e}"}
 
+    # Match related models
     rental_agency = match_or_none(RentalAgency, extracted_info.get("rental_agency"))
     rental_agency = rental_agency if rental_agency else "Other"
 
